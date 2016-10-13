@@ -9,8 +9,6 @@ Usage
 
 Get from ID
 ~~~~~~~~~~~
-::
-
 .. code-block:: python
 
     >>> from imdbparser import IMDb
@@ -27,8 +25,6 @@ Get from ID
 
 Search
 ~~~~~~
-::
-
 .. code-block:: python
 
     >>> from imdbparser import IMDb
