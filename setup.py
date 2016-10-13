@@ -9,11 +9,12 @@ with open(readme_path) as fp:
 
 setup(
     name='imdbparser',
-    version='1.0.1',
+    version='1.0.2',
     url='https://github.com/JohnDoee/imdbparser',
     author='John Doee',
     author_email='johndoee@tidalstream.org',
     description='IMDB Parser',
+    long_description=long_description,
     license='MIT',
     packages=['imdbparser'],
     install_requires=['lxml', 'requests'],
