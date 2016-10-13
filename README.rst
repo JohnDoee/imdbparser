@@ -1,7 +1,8 @@
 imdbparser
 ==========
 
-Search IMDb and get movie information. Incredibly basic, limited feature-set, somewhat fast.
+Search IMDb and get movie information.
+Incredibly basic, limited feature-set, somewhat fast.
 
 Usage
 -----
