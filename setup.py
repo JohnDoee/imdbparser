@@ -14,6 +14,7 @@ setup(
     author='John Doee',
     author_email='johndoee@tidalstream.org',
     description='IMDB Parser',
+    long_description=long_description,
     license='MIT',
     packages=['imdbparser'],
     install_requires=['lxml', 'requests'],
