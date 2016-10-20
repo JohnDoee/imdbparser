@@ -35,9 +35,24 @@ Search
     >>> search_result.fetch()
     >>> search_result.fetched
     True
-    >>> search_result.movies
+    >>> search_result.results
     [<Movie fetched=False imdb_id='0133093' title='The Matrix' year=1999>,
      <Movie fetched=False imdb_id='0234215' title='The Matrix Reloaded' year=2003>, ...]
+
+.. code-block:: python
+
+    >>> from imdbparser import IMDb
+    >>> imdb = IMDb()
+    >>> search_result = imdb.search_tv_show('it crowd')
+    >>> search_result.fetched
+    False
+    >>> search_result.fetch()
+    >>> search_result.fetched
+    True
+    >>> search_result.results
+    [<Movie fetched=False imdb_id='0487831' title='The IT Crowd' year=None>,
+     <Movie fetched=False imdb_id='0944954' title='The IT Crowd' year=None>, ...]
+
 
 
 
