@@ -15,7 +15,10 @@ class IMDb(object):
         return r.text
 
     def search_movie(self, query):
-        return SearchResult(query, self)
+        return SearchResult('movie', query, self)
+
+    def search_tv_show(self, query):
+        return SearchResult('tv', query, self)
 
     def get_movie(self, imdb_id):
         return Movie(imdb_id, self)

@@ -7,16 +7,24 @@ from .movie import Movie
 
 
 class SearchResult(Base):
-    base_url = 'http://akas.imdb.com/find?q=%s&s=tt&ttype=ft'
+    base_url = 'http://akas.imdb.com/find?q=%s&s=tt&ttype=%s'
 
-    def __init__(self, query, imdb):
+    def __init__(self, search_type, query, imdb):
+        self.search_type = search_type
         self.imdb_id = quote_plus(query)
         self.imdb = imdb
+
+    def _get_url(self):
+        ttype = 'ft'
+        if self.search_type == 'tv':
+            ttype = 'tv'
+
+        return self.base_url % (self.imdb_id, ttype, )
 
     def parse(self, html):
         super(SearchResult, self).parse(html)
 
-        self.movies = []
+        self.results = []
         for movie_row in self.tree.xpath("//table[@class='findList']//tr[contains(@class, 'findResult')]"):
             cover = movie_row.xpath(".//td[@class='primary_photo']//img/@src")[0]
             if '/nopicture/' in cover:
@@ -50,4 +58,4 @@ class SearchResult(Base):
             movie.cover = cover
             movie.alternative_titles = alternative_titles
 
-            self.movies.append(movie)
+            self.results.append(movie)
