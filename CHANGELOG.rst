@@ -1,3 +1,9 @@
+Version 1.0.3 (20-10-2016)
+===========================================================
+
+*   Feature: Added support for tv show search
+*   Change: Renamed search result variable from movies to results
+
 Version 1.0.2 (13-10-2016)
 ===========================================================
 
