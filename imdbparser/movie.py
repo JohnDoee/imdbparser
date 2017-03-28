@@ -35,7 +35,7 @@ class Movie(Base):
         self.description = None
         self.plot = None
 
-        titles = [x.strip() for x in self.tree.xpath('//h1//text()') if x.strip() and x not in ['(', ')']]
+        titles = [x.strip() for x in self.tree.xpath('//div[@id="tn15title"]/h1//text()') if x.strip() and x not in ['(', ')']]
 
         self.title = titles[0]
         if self.title[0] == self.title[-1] == '"':
