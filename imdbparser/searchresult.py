@@ -48,7 +48,9 @@ class SearchResult(Base):
             year = None
             if base_elements:
                 try:
-                    year = int(base_elements[0].strip('()'))
+                    years = re.findall(r'\((\d{4})\)', base_elements[0])
+                    if years:
+                        year = int(years[0])
                 except ValueError:
                     pass
 

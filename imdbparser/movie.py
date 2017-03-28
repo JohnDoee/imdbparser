@@ -137,3 +137,8 @@ class Movie(Base):
 
     def __repr__(self):
         return '<Movie fetched=%r imdb_id=%r title=%r year=%r>' % (self.fetched, self.imdb_id, self.title, self.year)
+
+    def get_titles(self):
+        yield self.title
+        for title in self.alternative_titles:
+            yield title
