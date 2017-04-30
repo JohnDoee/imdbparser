@@ -12,23 +12,22 @@ class Base(object):
         self.imdb_id = str(imdb_id).zfill(7)
         self.imdb = imdb
 
-    def _get_url(self):
-        return self.base_url % (self.imdb_id, )
+    def _get_urls(self):
+        return [base_url % (self.imdb_id, ) for base_url in self.base_urls]
 
     def fetch(self):
         if not self.fetched:
-            url = self._get_url()
-            logger.debug('Fetching and parsing url %s' % (url, ))
-            self.parse(self.imdb._get_data(url))
+            urls = self._get_urls()
+            logger.debug('Fetching and parsing urls %s' % (urls, ))
+            self.parse([self.imdb._get_data(url) for url in urls])
 
     def cleanup_photo_url(self, url):
         if url:
             if 'title_addposter' in url or 'imdb-share-logo' in url:
                 return None
-            logger.debug('Cleaning up url %s' % (url, ))
             url = url.split('.')
             url.pop(-2)
             return '.'.join(url)
 
-    def parse(self, html):
-        self.tree = lxml.html.fromstring(html)
+    def parse(self, htmls):
+        self.trees = [lxml.html.fromstring(html) for html in htmls]
