@@ -12,10 +12,10 @@ class Movie(Base):
     title = None
     year = None
 
-    base_url = 'http://akas.imdb.com/title/tt%s/combined'
+    base_urls = ['http://akas.imdb.com/title/tt%s/combined', 'http://akas.imdb.com/title/tt%s/']
 
-    def parse(self, html):
-        super(Movie, self).parse(html)
+    def parse(self, htmls):
+        super(Movie, self).parse(htmls)
 
         self.alternative_titles = []
         self.actors = []
@@ -34,14 +34,15 @@ class Movie(Base):
         self.release_date = None
         self.description = None
         self.plot = None
+        self.storyline = None
 
-        titles = [x.strip() for x in self.tree.xpath('//div[@id="tn15title"]/h1//text()') if x.strip() and x not in ['(', ')']]
+        titles = [x.strip() for x in self.trees[0].xpath('//div[@id="tn15title"]/h1//text()') if x.strip() and x not in ['(', ')']]
 
         self.title = titles[0]
         if self.title[0] == self.title[-1] == '"':
             self.title = self.title[1:-1]
 
-        title_extra = self.tree.xpath("//h1/span[@class='title-extra']")
+        title_extra = self.trees[0].xpath("//h1/span[@class='title-extra']")
         if title_extra:
             extra_title = title_extra[0].text.strip()
             if extra_title[0] == extra_title[-1] == '"':
@@ -61,7 +62,7 @@ class Movie(Base):
             else:
                 break
         else:
-            header_title = self.tree.xpath("//meta[@name='title']/@content")
+            header_title = self.trees[0].xpath("//meta[@name='title']/@content")
             if header_title:
                 try:
                     self.year = int(re.findall(r'\((?:TV Series )?(\d{4})(?:\u2013(?: |\d+))?\) - IMDb$',
@@ -69,15 +70,21 @@ class Movie(Base):
                 except (ValueError, IndexError):
                     pass
 
-        star_bar = self.tree.xpath("//div[@class='starbar-meta']")[0]
-        self.rating = Decimal(star_bar.xpath('./b')[0].text.split('/')[0])
-        self.votes = int(star_bar.xpath('./a')[0].text.split(' ')[0].replace(',', ''))
+        aggregate_ratings = self.trees[1].xpath("//div[@itemprop='aggregateRating']")
+        if aggregate_ratings:
+            aggregate_rating = aggregate_ratings[0]
+            self.rating = Decimal(aggregate_rating.xpath(".//*[@itemprop='ratingValue']/text()")[0])
+            self.votes = int(aggregate_rating.xpath(".//*[@itemprop='ratingCount']/text()")[0].replace(',', ''))
 
-        cover = self.tree.xpath("//link[@rel='image_src']/@href")
+        descriptions = self.trees[1].xpath("//div[@itemprop='description']")
+        if descriptions:
+            self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('.//text()') if x.strip()]).strip()
+
+        cover = self.trees[0].xpath("//link[@rel='image_src']/@href")
         if cover:
             self.cover = self.cleanup_photo_url(cover[0])
 
-        for elem in self.tree.xpath("//div[@class='info']"):
+        for elem in self.trees[0].xpath("//div[@class='info']"):
             info_text = elem.xpath(".//h5")[0].text
             if not info_text:
                 continue
@@ -123,7 +130,12 @@ class Movie(Base):
                     p.name = elem.text
                     self.writers.append(p)
 
-        for elem in self.tree.xpath("//table[@class='cast']/tr"):
+        if not self.release_date:
+            release_dates = [x.strip() for x in self.trees[1].xpath("//h4[text()='Release Date:']/../text()") if x.strip()]
+            if release_dates:
+                self.release_date = release_dates[0]
+
+        for elem in self.trees[0].xpath("//table[@class='cast']/tr"):
             elem = elem.xpath(".//td[@class='nm']/a")
             if not elem:
                 break

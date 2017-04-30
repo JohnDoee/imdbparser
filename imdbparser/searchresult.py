@@ -14,18 +14,18 @@ class SearchResult(Base):
         self.imdb_id = quote_plus(query)
         self.imdb = imdb
 
-    def _get_url(self):
+    def _get_urls(self):
         ttype = 'ft'
         if self.search_type == 'tv':
             ttype = 'tv'
 
-        return self.base_url % (self.imdb_id, ttype, )
+        return [self.base_url % (self.imdb_id, ttype, )]
 
-    def parse(self, html):
-        super(SearchResult, self).parse(html)
+    def parse(self, htmls):
+        super(SearchResult, self).parse(htmls)
 
         self.results = []
-        for movie_row in self.tree.xpath("//table[@class='findList']//tr[contains(@class, 'findResult')]"):
+        for movie_row in self.trees[0].xpath("//table[@class='findList']//tr[contains(@class, 'findResult')]"):
             cover = movie_row.xpath(".//td[@class='primary_photo']//img/@src")[0]
             if '/nopicture/' in cover:
                 cover = None
