@@ -35,6 +35,8 @@ class Movie(Base):
         self.description = None
         self.plot = None
         self.storyline = None
+        self.rating = None
+        self.votes = None
 
         titles = [x.strip() for x in self.trees[0].xpath('//div[@id="tn15title"]/h1//text()') if x.strip() and x not in ['(', ')']]
 
@@ -43,7 +45,7 @@ class Movie(Base):
             self.title = self.title[1:-1]
 
         title_extra = self.trees[0].xpath("//h1/span[@class='title-extra']")
-        if title_extra:
+        if title_extra and title_extra[0].text:
             extra_title = title_extra[0].text.strip()
             if extra_title[0] == extra_title[-1] == '"':
                 extra_title = extra_title[1:-1]
@@ -73,12 +75,17 @@ class Movie(Base):
         aggregate_ratings = self.trees[1].xpath("//div[@itemprop='aggregateRating']")
         if aggregate_ratings:
             aggregate_rating = aggregate_ratings[0]
-            self.rating = Decimal(aggregate_rating.xpath(".//*[@itemprop='ratingValue']/text()")[0])
-            self.votes = int(aggregate_rating.xpath(".//*[@itemprop='ratingCount']/text()")[0].replace(',', ''))
+            rating = aggregate_rating.xpath(".//*[@itemprop='ratingValue']/text()")
+            votes = aggregate_rating.xpath(".//*[@itemprop='ratingCount']/text()")
+            if rating and votes:
+                self.rating = Decimal(rating[0])
+                self.votes = int(votes[0].replace(',', ''))
 
         descriptions = self.trees[1].xpath("//div[@itemprop='description']")
         if descriptions:
             self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('.//text()') if x.strip()]).strip()
+            if self.storyline.startswith('Add a Plot\n'):
+                self.storyline = None
 
         cover = self.trees[0].xpath("//link[@rel='image_src']/@href")
         if cover:

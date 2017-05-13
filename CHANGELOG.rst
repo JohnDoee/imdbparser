@@ -1,3 +1,10 @@
+Version 1.0.8 (13-05-2017)
+===========================================================
+
+*   Bugfix: Shows with missing rating and shows with no description
+            not throwing exception anymore.
+*   Bugfix: Encoding error when searching for unicode
+
 Version 1.0.7 (30-04-2017)
 ===========================================================
 

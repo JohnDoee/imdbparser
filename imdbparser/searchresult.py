@@ -1,4 +1,5 @@
 import re
+import sys
 
 from requests.compat import quote_plus
 
@@ -11,6 +12,8 @@ class SearchResult(Base):
 
     def __init__(self, search_type, query, imdb):
         self.search_type = search_type
+        if sys.version_info[0] < 3 and isinstance(query, unicode):
+            query = query.encode('utf-8')
         self.imdb_id = quote_plus(query)
         self.imdb = imdb
 
