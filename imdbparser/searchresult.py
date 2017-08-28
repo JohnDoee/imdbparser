@@ -8,7 +8,7 @@ from .movie import Movie
 
 
 class SearchResult(Base):
-    base_url = 'http://akas.imdb.com/find?q=%s&s=tt&ttype=%s'
+    base_url = 'http://akas.imdb.com/find?q=%s&s=tt'
 
     def __init__(self, search_type, query, imdb):
         self.search_type = search_type
@@ -18,11 +18,11 @@ class SearchResult(Base):
         self.imdb = imdb
 
     def _get_urls(self):
-        ttype = 'ft'
+        url = self.base_url
         if self.search_type == 'tv':
-            ttype = 'tv'
+            url += '&ttype=tv'
 
-        return [self.base_url % (self.imdb_id, ttype, )]
+        return [self.base_url % (self.imdb_id, )]
 
     def parse(self, htmls):
         super(SearchResult, self).parse(htmls)
