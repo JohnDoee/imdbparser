@@ -12,7 +12,7 @@ class Movie(Base):
     title = None
     year = None
 
-    base_urls = ['http://akas.imdb.com/title/tt%s/reference', 'http://akas.imdb.com/title/tt%s/']
+    base_urls = ['http://www.imdb.com/title/tt%s/reference', 'http://www.imdb.com/title/tt%s/']
 
     def parse(self, htmls):
         super(Movie, self).parse(htmls)
@@ -42,7 +42,7 @@ class Movie(Base):
 
         self.title = titles[0]
 
-        title_extra = [x.strip() for x in self.trees[0].xpath("//div[@class='subpage_title_block']/text()") if x.strip()]
+        title_extra = [x.strip() for x in self.trees[0].xpath("//div[@class='titlereference-header']/div/text()") if x.strip()]
         if title_extra:
             title_extra = title_extra[0]
             if title_extra != 'Reference View':
