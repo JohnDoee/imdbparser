@@ -71,6 +71,8 @@ class Movie(Base):
         cover = self.trees[0].xpath("//link[@rel='image_src']/@href")
         if cover:
             self.cover = self.cleanup_photo_url(cover[0])
+            if 'images/logos/imdb_fb_logo' in self.cover:
+                self.cover = None
 
         rating = self.trees[0].xpath("//span[@class='ipl-rating-star__rating']/text()")
         if rating and rating[0]:
