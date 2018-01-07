@@ -20,6 +20,7 @@ class Base(object):
             urls = self._get_urls()
             logger.debug('Fetching and parsing urls %s' % (urls, ))
             self.parse([self.imdb._get_data(url) for url in urls])
+            self.fetched = True
 
     def cleanup_photo_url(self, url):
         if url:
