@@ -106,6 +106,7 @@ class Movie(Base):
 
         descriptions = self.trees[1].xpath("//div[@itemprop='description']")
         if descriptions:
+            self.plot = '\n'.join([x.strip() for x in descriptions[0].xpath('.//text()') if x.strip()]).strip()
             self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('.//text()') if x.strip()]).strip()
             if self.storyline.startswith('Add a Plot\n'):
                 self.storyline = None
@@ -113,8 +114,6 @@ class Movie(Base):
         release_dates = [x.strip() for x in self.trees[1].xpath("//h4[text()='Release Date:']/../text()") if x.strip()]
         if release_dates:
             self.release_date = release_dates[0]
-
-        self.plot = self.storyline
 
         rows = self.trees[0].xpath("//div[@class='titlereference-overview-section']")
         for row in rows:
