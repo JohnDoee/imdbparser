@@ -12,7 +12,7 @@ class Movie(Base):
     title = None
     year = None
 
-    base_urls = ['http://www.imdb.com/title/tt%s/reference', 'http://www.imdb.com/title/tt%s/']
+    base_urls = ['https://www.imdb.com/title/tt%s/reference', 'https://www.imdb.com/title/tt%s/']
 
     def parse(self, htmls):
         super(Movie, self).parse(htmls)
@@ -91,6 +91,8 @@ class Movie(Base):
                 self.genres = [x.text for x in value.xpath('.//a') if '/genre/' in x.attrib['href']]
             elif key == 'Taglines':
                 self.description = value.text.strip()
+            elif key == 'Plot Summary':
+                self.plot = value.xpath('./p')[0].text.strip()
             elif key == 'Plot Keywords':
                 self.plot_keywords = [x.text for x in value.xpath(".//a") if '/keyword/' in x.attrib['href']]
             elif key == 'Also Known As':
@@ -106,8 +108,7 @@ class Movie(Base):
 
         descriptions = self.trees[1].xpath("//div[@itemprop='description']")
         if descriptions:
-            self.plot = '\n'.join([x.strip() for x in descriptions[0].xpath('.//text()') if x.strip()]).strip()
-            self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('.//text()') if x.strip()]).strip()
+            self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('./text()') if x.strip()]).strip()
             if self.storyline.startswith('Add a Plot\n'):
                 self.storyline = None
 
@@ -118,7 +119,7 @@ class Movie(Base):
         rows = self.trees[0].xpath("//div[@class='titlereference-overview-section']")
         for row in rows:
             key = row.xpath('./text()')[0].strip()
-            if key == 'Director:' or key == 'Writers:':
+            if key == 'Director:' or key == 'Writers:' or key == 'Writer:':
                 for elem in row.xpath(".//a"):
                     if '/name/' not in elem.attrib['href']:
                         continue
@@ -126,7 +127,7 @@ class Movie(Base):
                     p.name = elem.text
                     if key == 'Director:':
                         self.directors.append(p)
-                    elif key == 'Writers:':
+                    elif key == 'Writers:' or key == 'Writer:':
                         self.writers.append(p)
 
         for row in self.trees[0].xpath("//h4[@id='cast']/../../following-sibling::table[1]//tr//td[@itemprop='actor']"):
