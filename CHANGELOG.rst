@@ -1,3 +1,10 @@
+Version 1.0.14 (26-04-2018)
+===========================================================
+
+*   Bugfix: IMDb redirects to HTTPS if HTTP is called, changed standard URLs to HTTPS
+*   Bugfix: Writer / Writers support (not always plural)
+*   Bugfix: Storyline doesn't include writer anymore
+
 Version 1.0.9 (28-08-2017)
 ===========================================================
 
