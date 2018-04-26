@@ -9,7 +9,7 @@ with open(readme_path) as fp:
 
 setup(
     name='imdbparser',
-    version='1.0.13',
+    version='1.0.14',
     url='https://github.com/JohnDoee/imdbparser',
     author='John Doee',
     author_email='johndoee@tidalstream.org',
