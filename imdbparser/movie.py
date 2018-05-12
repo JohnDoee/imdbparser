@@ -92,7 +92,9 @@ class Movie(Base):
             elif key == 'Taglines':
                 self.description = value.text.strip()
             elif key == 'Plot Summary':
-                self.plot = value.xpath('./p')[0].text.strip()
+                plot = value.xpath('./p')
+                if plot:
+                    self.plot = plot[0].text.strip()
             elif key == 'Plot Keywords':
                 self.plot_keywords = [x.text for x in value.xpath(".//a") if '/keyword/' in x.attrib['href']]
             elif key == 'Also Known As':
@@ -106,7 +108,7 @@ class Movie(Base):
             elif key == 'Language':
                 self.languages = [x.text for x in value.xpath(".//a") if '/language/' in x.attrib['href']]
 
-        descriptions = self.trees[1].xpath("//div[@itemprop='description']")
+        descriptions = self.trees[1].xpath("//span[@itemprop='description']")
         if descriptions:
             self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('./text()') if x.strip()]).strip()
             if self.storyline.startswith('Add a Plot\n'):

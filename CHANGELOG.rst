@@ -1,3 +1,9 @@
+Version 1.0.17 (12-05-2018)
+===========================================================
+
+*   Bugfix: Storyline changed tagtype from div to span
+*   Bugfix: Missing plot summary threw exception
+
 Version 1.0.14 (26-04-2018)
 ===========================================================
 
