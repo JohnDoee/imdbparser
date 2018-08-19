@@ -35,6 +35,7 @@ class Movie(Base):
         self.description = None
         self.plot = None
         self.storyline = None
+        self.tagline = None
         self.rating = None
         self.votes = None
 
@@ -90,7 +91,7 @@ class Movie(Base):
             if key == 'Genres':
                 self.genres = [x.text for x in value.xpath('.//a') if '/genre/' in x.attrib['href']]
             elif key == 'Taglines':
-                self.description = value.text.strip()
+                self.tagline = value.text.strip()
             elif key == 'Plot Summary':
                 plot = value.xpath('./p')
                 if plot:
@@ -108,10 +109,14 @@ class Movie(Base):
             elif key == 'Language':
                 self.languages = [x.text for x in value.xpath(".//a") if '/language/' in x.attrib['href']]
 
-        descriptions = self.trees[1].xpath("//span[@itemprop='description']")
-        if descriptions:
-            self.storyline = '\n'.join([x.strip() for x in descriptions[-1].xpath('./text()') if x.strip()]).strip()
-            if self.storyline.startswith('Add a Plot\n'):
+        summary_texts = self.trees[1].xpath("//div[@class='summary_text']/text()")
+        if summary_texts:
+            self.description = summary_texts[0].strip()
+
+        storylines = self.trees[1].xpath("//h2[text()='Storyline']/../div/p/span/text()")
+        if storylines:
+            self.storyline = storylines[0].strip()
+            if self.storyline.startswith('Add a Plot'):
                 self.storyline = None
 
         release_dates = [x.strip() for x in self.trees[1].xpath("//h4[text()='Release Date:']/../text()") if x.strip()]
@@ -121,13 +126,13 @@ class Movie(Base):
         rows = self.trees[0].xpath("//div[@class='titlereference-overview-section']")
         for row in rows:
             key = row.xpath('./text()')[0].strip()
-            if key == 'Director:' or key == 'Writers:' or key == 'Writer:':
+            if key == 'Director:' or key == 'Directors:' or key == 'Writers:' or key == 'Writer:':
                 for elem in row.xpath(".//a"):
                     if '/name/' not in elem.attrib['href']:
                         continue
                     p = Person(re.findall('/nm(\d+)', elem.attrib['href'])[0], self.imdb)
                     p.name = elem.text
-                    if key == 'Director:':
+                    if key == 'Director:' or key == 'Directors:':
                         self.directors.append(p)
                     elif key == 'Writers:' or key == 'Writer:':
                         self.writers.append(p)
