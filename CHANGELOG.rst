@@ -1,3 +1,9 @@
+Version 1.0.18 (19-08-2018)
+===========================================================
+
+*   Change: Tagline, description and storyline moved around a little bit
+*   Bugfix: Director now found if plural too
+
 Version 1.0.17 (12-05-2018)
 ===========================================================
 
