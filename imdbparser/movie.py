@@ -113,9 +113,9 @@ class Movie(Base):
         if summary_texts:
             self.description = summary_texts[0].strip()
 
-        storylines = self.trees[1].xpath("//h2[text()='Storyline']/../div/p/span/text()")
+        storylines = self.trees[1].xpath("//h2[text()='Storyline']/../div/p/span//text()")
         if storylines:
-            self.storyline = storylines[0].strip()
+            self.storyline = ''.join(storylines).strip()
             if self.storyline.startswith('Add a Plot'):
                 self.storyline = None
 
