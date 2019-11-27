@@ -13,6 +13,8 @@ def main():
     movie = i.get_movie(args.imdb_id.lstrip('tt'))
     movie.fetch()
     pprint(movie.__dict__)
+    for recommended_movie in movie.more_like_this:
+        pprint(recommended_movie.__dict__)
 
 
 if __name__ == '__main__':

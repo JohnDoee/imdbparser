@@ -21,6 +21,7 @@ class Movie(Base):
         self.actors = []
         self.directors = []
         self.writers = []
+        self.more_like_this = []
 
         self.languages = []
         self.genres = []
@@ -151,6 +152,39 @@ class Movie(Base):
             self.actors.append(p)
 
         self.alternative_titles = list(set(self.alternative_titles))
+
+        for rec_details in self.trees[1].xpath("//div[@class='rec_details']"):
+            self.more_like_this.append(self.parse_recommendation(rec_details))
+
+    def parse_recommendation(self, tree):
+        tree_title = tree.xpath(".//div[@class='rec-title']")[0]
+        imdb_id = tree_title.xpath('./a/@href')[0].split('/')[2][2:]
+        movie = Movie(imdb_id, self.imdb)
+
+        title = tree_title.xpath('.//a//text()')
+        if title:
+            movie.title = title[0].strip()
+
+        year = tree_title.xpath('./span/text()')
+        if year:
+            try:
+                movie.year = int(tree_title.xpath('./span/text()')[0].strip('()'))
+            except ValueError:
+                pass
+
+        movie.genres = [x.strip() for x in tree.xpath(".//div[contains(@class, 'rec-cert-genre')]/text()") if x.strip()]
+
+        ratings = tree.xpath(".//div[contains(@class, 'rating-list')]/@title")
+        if ratings:
+            ratings = re.findall(r'([\d.]+)/10 \(([\d,]+) votes\)', ratings[0])
+            if ratings:
+                ratings = ratings[0]
+                movie.rating = Decimal(ratings[0])
+                movie.votes = int(ratings[1].replace(',', ''))
+
+        movie.tagline = ''.join(tree.xpath(".//div[@class='rec-outline']/p/text()")).strip()
+
+        return movie
 
     def __repr__(self):
         return '<Movie fetched=%r imdb_id=%r title=%r year=%r>' % (self.fetched, self.imdb_id, self.title, self.year)
