@@ -1,6 +1,7 @@
 Version 1.0.21 (21-12-2019)
 ===========================================================
 
+*   Feature: Better CLI
 *   Bugfix: TV search was not actually searching TV only
 *   Bugfix: Movie search now search only movies
 
