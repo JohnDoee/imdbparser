@@ -21,8 +21,10 @@ class SearchResult(Base):
         url = self.base_url
         if self.search_type == 'tv':
             url += '&ttype=tv'
+        elif self.search_type == 'movie':
+            url += '&ttype=ft'
 
-        return [self.base_url % (self.imdb_id, )]
+        return [url % (self.imdb_id, )]
 
     def parse(self, htmls):
         super(SearchResult, self).parse(htmls)
