@@ -1,12 +1,18 @@
+Version 1.0.21 (21-12-2019)
+===========================================================
+
+*   Bugfix: TV search was not actually searching TV only
+*   Bugfix: Movie search now search only movies
+
 Version 1.0.20 (27-11-2019)
 ===========================================================
 
-*  Feature: Added support for "more like this"
+*   Feature: Added support for "more like this"
 
 Version 1.0.19 (13-04-2019)
 ===========================================================
 
-*  Bugfix: Link in plot not properly parsed
+*   Bugfix: Link in plot not properly parsed
 
 Version 1.0.18 (19-08-2018)
 ===========================================================
