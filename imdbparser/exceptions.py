@@ -4,4 +4,3 @@ class IMDbException(Exception):
 
 class UnknownChartTypeException(IMDbException):
     pass
-

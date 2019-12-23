@@ -9,13 +9,13 @@ from .person import Person
 from .searchresult import SearchResult
 
 CHART_TYPES = [
-    'tvmeter',
-    'moviemeter',
-    'top',
-    'top-english-movies',
-    'toptv',
+    "tvmeter",
+    "moviemeter",
+    "top",
+    "top-english-movies",
+    "toptv",
     # 'top-rated-indian-movies',
-    'bottom',
+    "bottom",
 ]
 
 
@@ -29,8 +29,8 @@ class IMDb(object):
         return r.text
 
     def _normalize_title(self, title):
-        title = re.sub(r'[^\x00-\x7F]+', '', title)
-        title = re.sub(r' +', ' ', title)
+        title = re.sub(r"[^\x00-\x7F]+", "", title)
+        title = re.sub(r" +", " ", title)
 
         return title
 
@@ -58,23 +58,29 @@ class IMDb(object):
         for result in results[:7]:
             for title in result.get_titles():
                 result_normalized_title = result.title
-                if result_normalized_title == normalized_title and (year is None or result.year is None or year == result.year):
+                if result_normalized_title == normalized_title and (
+                    year is None or result.year is None or year == result.year
+                ):
                     return result
 
         if year:
             for result in results[:5]:
                 for title in result.get_titles():
                     result_normalized_title = result.title
-                    if result_normalized_title == normalized_title and result.year is not None and abs(year - result.year) <= 1:
+                    if (
+                        result_normalized_title == normalized_title
+                        and result.year is not None
+                        and abs(year - result.year) <= 1
+                    ):
                         return result
 
         return results[0]
 
     def search_movie(self, query):
-        return SearchResult('movie', query, self)
+        return SearchResult("movie", query, self)
 
     def search_tv_show(self, query):
-        return SearchResult('tv', query, self)
+        return SearchResult("tv", query, self)
 
     def get_movie(self, imdb_id):
         return Movie(imdb_id, self)
