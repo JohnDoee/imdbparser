@@ -4,6 +4,8 @@ import logging
 from pprint import pprint
 
 def main():
+    from .imdb import IMDb, CHART_TYPES
+
     parser = argparse.ArgumentParser(description='Fetch info from IMDb')
     parser.add_argument('--debug', help='Enable debugging', action='store_true')
 
@@ -21,12 +23,14 @@ def main():
     resolve_parser.add_argument('title', help='Title to search-resolve for')
     resolve_parser.add_argument('year', help='Year close to the entry', type=int, nargs='?')
 
+    chart_parser = subparsers.add_parser(name='chart', description='Fetch a chart')
+    chart_parser.add_argument('type', help='Chart type', choices=CHART_TYPES)
+
     args = parser.parse_args()
 
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
 
-    from .imdb import IMDb
     i = IMDb()
     movie = None
     movies = None
@@ -38,12 +42,13 @@ def main():
             movies = i.search_tv_show(args.title)
         elif args.type == 'movie':
             movies = i.search_movie(args.title)
-        movies.fetch()
     elif args.command == 'resolve':
         if args.type == 'tv':
             movie = i.resolve_tv_show(args.title, args.year)
         elif args.type == 'movie':
             movie = i.resolve_movie(args.title, args.year)
+    elif args.command == 'chart':
+        movies = i.get_chart(args.type)
     else:
         parser.print_help()
 
@@ -54,6 +59,7 @@ def main():
             pprint(recommended_movie.__dict__)
 
     if movies is not None:
+        movies.fetch()
         if movies.results:
             for movie in movies.results:
                 print(movie)

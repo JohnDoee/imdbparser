@@ -2,9 +2,21 @@ import re
 
 import requests
 
+from .chart import Chart
+from .exceptions import UnknownChartTypeException
 from .movie import Movie
 from .person import Person
 from .searchresult import SearchResult
+
+CHART_TYPES = [
+    'tvmeter',
+    'moviemeter',
+    'top',
+    'top-english-movies',
+    'toptv',
+    # 'top-rated-indian-movies',
+    'bottom',
+]
 
 
 class IMDb(object):
@@ -69,3 +81,9 @@ class IMDb(object):
 
     def get_person(self, imdb_id):
         return Person(imdb_id, self)
+
+    def get_chart(self, chart_type):
+        if chart_type not in CHART_TYPES:
+            raise UnknownChartTypeException()
+
+        return Chart(chart_type, self)
