@@ -2,6 +2,7 @@ import re
 
 import requests
 
+from .advancedsearchresult import AS, AdvancedSearchResult
 from .chart import Chart
 from .exceptions import UnknownChartTypeException
 from .movie import Movie
@@ -93,3 +94,6 @@ class IMDb(object):
             raise UnknownChartTypeException()
 
         return Chart(chart_type, self)
+
+    def advanced_search(self, **kwargs):
+        return AdvancedSearchResult(self, **kwargs)

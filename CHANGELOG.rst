@@ -2,6 +2,7 @@ Version 1.0.22 ()
 ===========================================================
 
 *   Feature: Added support for IMDb charts
+*   Feature: Added support for advanced search.
 
 
 Version 1.0.21 (21-12-2019)

@@ -4,7 +4,7 @@ from pprint import pprint
 
 
 def main():
-    from .imdb import IMDb, CHART_TYPES
+    from .imdb import IMDb, CHART_TYPES, AS
 
     parser = argparse.ArgumentParser(description="Fetch info from IMDb")
     parser.add_argument("--debug", help="Enable debugging", action="store_true")
@@ -65,6 +65,8 @@ def main():
     if movie is not None:
         movie.fetch()
         pprint(movie.__dict__)
+        print("")
+        print("More like this")
         for recommended_movie in movie.more_like_this:
             pprint(recommended_movie.__dict__)
 
